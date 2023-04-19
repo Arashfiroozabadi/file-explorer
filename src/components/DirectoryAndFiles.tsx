@@ -1,12 +1,13 @@
 import {useState} from "react";
-import {FolderIcon, FolderPlusIcon, TrashIcon, DocumentPlusIcon} from "@heroicons/react/24/solid";
+import {FolderIcon} from "@heroicons/react/24/solid";
 import type {v4} from "uuid";
 
-import {AddDirectoryPayLoadTypes, DirectoryType} from "@/types";
+import {DirectoryType} from "@/types";
 import Box from "@/components/Box";
 import FileExtIcon from "@/components/FileExtIcon";
 import {useAppDispatch, useAppSelector} from "@/redux/hooks";
-import {addDirectory, removeDirectory, setActiveNode} from "@/features/fileExplorer/explorerSlice";
+import {setActiveNode} from "@/features/fileExplorer/explorerSlice";
+import FileManager, {RemoveNode} from "@/features/fileExplorer/FileManager";
 
 interface PropsTypes {
 	fsData: DirectoryType
@@ -28,31 +29,6 @@ export default function DirectoryAndFiles(props: PropsTypes) {
 		dispatch(setActiveNode(nodeId))
 	}
 
-	const addNewNode = (id: typeof v4, type: 'dir' | 'file'): void => {
-		const name = window.prompt('Enter directory name');
-		if (name) {
-
-			const isDirExist = fsData.items?.find(item => item.name === name);
-			if (isDirExist) {
-				alert('cannot add existing node');
-			} else {
-				const payload: AddDirectoryPayLoadTypes = {
-					nodeId: fsData.id,
-					newNode: {
-						name,
-						id,
-						type
-					}
-				}
-				dispatch(addDirectory(payload))
-			}
-
-		}
-	}
-	const removeNode = (id: typeof v4): void => {
-		dispatch(removeDirectory({nodeId: id}))
-	}
-
 	if (fsData.type === 'file') {
 		return (
 			<Box className='flex items-center py-1'>
@@ -65,13 +41,9 @@ export default function DirectoryAndFiles(props: PropsTypes) {
 				{
 					activeNodeId === fsData.id &&
 					<div className='rounded border py-1 px-2 ml-2'>
-						<TrashIcon
-							className="h-5 w-4 text-blue-500"
-							onClick={() => removeNode(fsData.id)}
-						/>
+						<RemoveNode fsData={fsData}/>
 					</div>
 				}
-
 			</Box>
 		)
 	}
@@ -86,22 +58,7 @@ export default function DirectoryAndFiles(props: PropsTypes) {
 					{fsData.name}
 				</div>
 				{activeNodeId === fsData.id &&
-					<div className='flex border rounded py-1 px-2 items-end  ml-2'>
-						{fsData.name !== 'root' &&
-							<TrashIcon
-								className="h-5 w-4 text-blue-500 mr-2"
-								onClick={() => removeNode(fsData.id)}
-							/>
-						}
-						<DocumentPlusIcon
-							className="h-5 w-4 text-blue-500 mr-2"
-							onClick={() => addNewNode(fsData.id, 'file')}
-						/>
-						<FolderPlusIcon
-							className="h-5 w-4 text-blue-500"
-							onClick={() => addNewNode(fsData.id, 'dir')}
-						/>
-					</div>
+					<FileManager fsData={fsData}/>
 				}
 			</div>
 			{isExtended && fsData.items?.map(item => (

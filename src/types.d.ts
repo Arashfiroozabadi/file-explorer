@@ -6,10 +6,10 @@ export interface FileType {
 }
 
 export interface DirectoryType {
-	type: 'dir' | 'file'
+	type: 'dir' | 'file' | null
 	name: string
 	items?: DirectoryType[]
-	id: v4
+	id?: v4
 }
 
 export interface AddDirectoryPayLoadTypes {
