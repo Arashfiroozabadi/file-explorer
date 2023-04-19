@@ -1,18 +1,27 @@
 // Define a type for the slice state
+import {v4} from "uuid";
+
 export interface FileType {
 	name: string
 }
 
 export interface DirectoryType {
-	name: string,
-	files?: FileType[],
-	directories?: DirectoryType[],
-	level: number
+	type: 'dir' | 'file'
+	name: string
+	items?: DirectoryType[]
+	id: v4
 }
 
-export interface FileSystemEntryType {
-	name: string,
-	files?: FileType[],
-	directories?: DirectoryType[],
-	level: number
+export interface AddDirectoryPayLoadTypes {
+	nodeId: v4
+	newNode: DirectoryType
+}
+
+export interface RemoveDirectoryPayLoadTypes {
+	nodeId: v4
+}
+
+// Define the initial state using that type
+export interface InitStateType extends DirectoryType {
+	activeNodeId?: typeof uuidv4
 }

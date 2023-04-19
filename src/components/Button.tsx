@@ -1,16 +1,13 @@
-import {DirectoryType} from "@/types";
-import Box from "@/components/Box";
 import {HTMLAttributes} from "react";
 
-interface PropsTypes extends HTMLAttributes<HTMLDivElement> {
-	text?: string;
+interface PropsTypes extends HTMLAttributes<HTMLButtonElement> {
 }
 
 export default function Button(props: PropsTypes) {
-	const {text} = props;
+	const {children, onClick} = props;
 	return (
-		<button>
-			{text}
+		<button className='py-0 px-2' onClick={onClick}>
+			{children}
 		</button>
 	)
 
